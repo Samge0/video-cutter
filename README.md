@@ -62,6 +62,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ## Project Structure
 
 ```
+├── Dockerfile        # Docker configuration
 ├── main.py           # FastAPI application
 ├── requirements.txt  # Python dependencies
 ├── static/           # Static files
@@ -69,6 +70,39 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 │   └── index.html    # Main application page
 ├── uploads/          # Temporary storage for uploaded videos
 └── processed/        # Storage for processed videos
+```
+
+## Docker Deployment
+
+1. Build the Docker image:
+
+```bash
+docker build -t video-cutter .
+```
+
+2. Run the container:
+
+```bash
+docker run -d -p 8000:8000 --name video-cutter-app video-cutter
+```
+Or run the pre-built Docker image: `samge/video-cutter`
+
+```bash
+docker run -d -p 8000:8000 --name video-cutter-app samge/video-cutter
+```
+
+3. Access the application at `http://localhost:8000`
+
+To stop the container:
+
+```bash
+docker stop video-cutter-app
+```
+
+To remove the container:
+
+```bash
+docker rm video-cutter-app
 ```
 
 ## Notes

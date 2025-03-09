@@ -1,0 +1,33 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# Development directories
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Video storage directories (created at runtime)
+uploads/*
+processed/*
+!uploads/.gitkeep
+!processed/.gitkeep
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Documentation
+LICENSE
+README.md
