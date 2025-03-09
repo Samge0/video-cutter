@@ -79,3 +79,9 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ## License
 
 MIT
+
+## ScreenShot
+![image](https://github.com/user-attachments/assets/344e266f-82a8-4b2b-9e61-7cfec700e3f8)
+
+![image](https://github.com/user-attachments/assets/30d1eb81-e3da-4601-b0cd-9f57bcd5d1de)
+
