@@ -8,31 +8,41 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css" rel="stylesheet">
     <style>
         .video-container {
-            max-width: 800px;
-            margin: 20px auto;
+            max-width: 50rem;
+            margin: 1.25rem auto;
         }
         #video-player {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 1.25rem;
         }
         #time-slider {
-            margin: 20px 0;
-            height: 20px;
+            margin: 1.25rem 0;
+            height: 1.25rem;
         }
         .time-display {
-            margin: 10px 0;
+            margin: 0.625rem 0;
             font-family: monospace;
         }
         .upload-container {
-            border: 2px dashed #ccc;
-            padding: 20px;
+            border: 0.125rem dashed #ccc;
+            padding: 1.25rem;
             text-align: center;
-            margin: 20px 0;
-            border-radius: 5px;
+            margin: 1.25rem 0;
+            border-radius: 0.3125rem;
         }
         .upload-container.dragover {
             border-color: #007bff;
             background-color: #f8f9fa;
+        }
+        .loading-spinner {
+            display: none;
+            margin: 0 0.625rem;
+        }
+        #preview-section {
+            display: none;
+            margin-top: 1.875rem;
+            border-top: 0.0625rem solid #dee2e6;
+            padding-top: 1.25rem;
         }
     </style>
 </head>
@@ -63,11 +73,21 @@
                     Duration: <span id="duration-time">00:00</span>
                 </div>
 
-                <div class="text-center mt-3">
+                <div class="text-center mt-5">
                     <button id="cut-btn" class="btn btn-success" disabled>Cut Video</button>
-                    <button id="download-btn" class="btn btn-primary d-none">Download</button>
+                    <div class="loading-spinner spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <button id="download-btn" class="btn btn-primary d-none" style="margin-left:1rem">Download</button>
                 </div>
             </div>
+        </div>
+
+        <div id="preview-section" class="video-container">
+            <h4 class="mb-3">Preview Cut Video</h4>
+            <video id="preview-player" controls>
+                Your browser does not support the video tag.
+            </video>
         </div>
     </div>
 
@@ -170,6 +190,14 @@
         // Cut video handler
         cutBtn.addEventListener('click', async () => {
             const [start, end] = timeSlider.noUiSlider.get().map(Number);
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const previewSection = document.getElementById('preview-section');
+            const previewPlayer = document.getElementById('preview-player');
+            
+            // Show loading spinner and disable cut button
+            loadingSpinner.style.display = 'inline-block';
+            cutBtn.disabled = true;
+            downloadBtn.classList.add('d-none');
             
             try {
                 const response = await fetch('/cut-video', {
@@ -186,16 +214,29 @@
                 
                 const data = await response.json();
                 if (data.success) {
+                    // Show download button and preview
                     downloadBtn.classList.remove('d-none');
                     downloadBtn.onclick = () => {
                         window.location.href = `/download/${data.output_filename}`;
                     };
+                    
+                    // Show preview section with cut video
+                    previewSection.style.display = 'block';
+                    previewPlayer.src = `/download/${data.output_filename}`;
+                    // Make preview player responsive by setting width to 100%
+                    previewPlayer.style.width = '100%';
+                    previewPlayer.style.height = 'auto';
+                    await previewPlayer.load();
                 } else {
                     alert('Failed to cut video: ' + data.error);
                 }
             } catch (error) {
                 console.error('Cut failed:', error);
                 alert('Failed to cut video. Please try again.');
+            } finally {
+                // Hide loading spinner and enable cut button
+                loadingSpinner.style.display = 'none';
+                cutBtn.disabled = false;
             }
         });
     </script>
