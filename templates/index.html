@@ -180,6 +180,21 @@
             document.getElementById('duration-time').textContent = formatTime(end - start);
         });
 
+        // Add event listener for time slider change
+        // This will update the video position when the start time changes
+        let previousStartValue = 0;
+        timeSlider.noUiSlider.on('change', (values) => {
+            const [start, end] = values.map(Number);
+            // Only update video position if start value changed
+            if (start !== previousStartValue) {
+                // Set video current time to the start position
+                videoPlayer.currentTime = start;
+                // Pause the video
+                videoPlayer.pause();
+                previousStartValue = start;
+            }
+        });
+
         // Format time to MM:SS
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
