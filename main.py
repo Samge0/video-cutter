@@ -40,6 +40,7 @@ async def cut_video(request: Request):
     filename = data["filename"]
     start_time = data["start_time"]
     end_time = data["end_time"]
+    duration = end_time - start_time
     input_path = UPLOAD_DIR / filename
     output_filename = f"cut_{filename}"
     output_path = PROCESSED_DIR / output_filename
@@ -51,11 +52,13 @@ async def cut_video(request: Request):
         frame_rate = eval(video_info['r_frame_rate'])
         
         # Perform lossless cut using ffmpeg with proper stream alignment
-        stream = ffmpeg.input(str(input_path), ss=start_time)
+        # Using both ss in input and output to ensure accurate cutting
+        stream = ffmpeg.input(str(input_path))
         stream = ffmpeg.output(
             stream,
             str(output_path),
-            t=end_time - start_time,
+            ss=start_time,
+            to=end_time,  # Use 'to' instead of 't' for more precise end time
             c='copy',  # Use copy mode for lossless cutting
             force_key_frames='expr:gte(t,n_forced*1)',
             max_muxing_queue_size=9999,
