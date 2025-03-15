@@ -88,7 +88,7 @@ docker run -d -p 8000:8000 --name video-cutter-app video-cutter
 Or run the pre-built Docker image: `samge/video-cutter`
 
 ```bash
-docker run -d -p 8000:8000 --name video-cutter-app samge/video-cutter
+docker run -itd --restart=always -p 8000:8000 --name video-cutter-app samge/video-cutter
 ```
 
 3. Access the application at `http://localhost:8000`
